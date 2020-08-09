@@ -25,19 +25,19 @@
               width="55">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="userName"
               label="用户名">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="password"
               label="密码">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="identity"
               label="身份">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="employeeId"
               label="员工编号">
             </el-table-column>
             <el-table-column
@@ -55,7 +55,7 @@
         <el-button type="primary" @click="sendForm()">发送表单</el-button>
       </div>
     </div>
-    <el-dialog title="dialogTitle" width="30%" :visible.sync="dialogFormVisible" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" width="30%" :visible.sync="dialogFormVisible" :before-close="handleClose">
       <el-divider></el-divider>
       <el-form :model="form" :rules="rules" ref="form">
         <el-form-item label="用户名" :label-width="formLabelWidth" prop="userName">
@@ -65,8 +65,10 @@
           <el-input v-model="form.password" autocomplete="off" class="el-input-width"></el-input>
         </el-form-item>
         <el-form-item label="角色" :label-width="formLabelWidth" prop="identity">
-          <el-radio v-model="form.identity" label="user">普通用户</el-radio>
-          <el-radio v-model="form.identity" label="admin">管理员</el-radio>
+          <el-select v-model="form.identity" placeholder="请选择">
+            <el-option label="普通用户" value="user"></el-option>
+            <el-option label='管理员' value="admin"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="员工编号" :label-width="formLabelWidth" prop="employeeId">
           <el-input v-model="form.employeeId" autocomplete="off" class="el-input-width"></el-input>
@@ -74,7 +76,7 @@
       </el-form>
       <el-divider></el-divider>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancelSubmit">取 消</el-button>
         <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
       </div>
     </el-dialog>
@@ -86,7 +88,12 @@ export default {
   name: 'FormManage',
   data () {
     return {
-      tableData: [],
+      tableData: [{
+        userName: '示例',
+        password: '示例',
+        identity: 'admin',
+        employeeId: '示例'
+      }],
       dialogFormVisible: false,
       formLabelWidth: '120px',
       headerCellStyle: {background: '#eef1f6', color: '#606266'},
@@ -122,11 +129,82 @@ export default {
     handleEdit (index, row) {
       this.dialogFormVisible = true
       this.dialogTitle = '修改用户'
+      this.form.userName = row.userName
+      this.form.password = row.password
+      this.form.identity = row.identity
+      this.form.employeeId = row.employeeId
     },
     handleDelete (index, row) {
+      // apiurl为接口地址
+      this.$axios.post('apiurl', {employeeId: row.employeeId}).then(res => {
+        console.log(res.data)
+        if (res.data.data.success === true) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('删除失败')
+        }
+      })
     },
-    onSubmit () {
+    onSubmit (ruleForm) {
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false
+          if (this.dialogTitle === '添加用户') {
+            // apiurl为接口地址
+            this.$axios.post('apiurl', {
+              userName: this.form.userName,
+              password: this.form.password,
+              identity: this.form.identity,
+              employeeId: this.form.employeeId
+            }).then(res => {
+              console.log(res.data)
+              if (res.data.data.success === true) {
+                this.$message({
+                  message: '添加用户成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error('添加用户失败')
+              }
+            })
+          } else if (this.dialogTitle === '修改用户') {
+            // apiurl为接口地址
+            this.$axios.put('apiurl', {
+              userName: this.form.userName,
+              password: this.form.password,
+              identity: this.form.identity,
+              employeeId: this.form.employeeId
+            }).then(res => {
+              console.log(res.data)
+              if (res.data.data.success === true) {
+                this.$message({
+                  message: '修改用户成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error('修改用户失败')
+              }
+            })
+            this.clearForm()
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    cancelSubmit () {
       this.dialogFormVisible = false
+      this.clearForm()
+    },
+    clearForm () {
+      this.form.userName = ''
+      this.form.password = ''
+      this.form.identity = ''
+      this.form.employeeId = ''
     },
     toggleSelection (rows) {
       if (rows) {
@@ -146,11 +224,17 @@ export default {
       this.$confirm('确认关闭？')
         .then(_ => {
           done()
+          this.clearForm()
         })
         .catch(_ => {})
     }
   },
   created () {
+    // apiurl为接口地址
+    this.$axios.get('apiurl').then(res => {
+      console.log(res.data)
+      // this.tableData = res.data.data.students
+    })
   }
 }
 </script>

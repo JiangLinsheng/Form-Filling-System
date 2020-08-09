@@ -240,6 +240,11 @@ export default {
     }
   },
   created () {
+    // apiurl为接口地址
+    this.$axios.get('apiurl').then(res => {
+      console.log(res.data)
+      // this.tableData = res.data.data.forms
+    })
   }
 }
 </script>
