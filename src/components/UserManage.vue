@@ -71,7 +71,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="员工编号" :label-width="formLabelWidth" prop="employeeId">
-          <el-input v-model="form.employeeId" autocomplete="off" class="el-input-width"></el-input>
+          <el-input v-model="form.employeeId" disabled="true" autocomplete="off" class="el-input-width"></el-input>
         </el-form-item>
       </el-form>
       <el-divider></el-divider>
@@ -114,9 +114,6 @@ export default {
         ],
         identity: [
           {required: true, message: '请输入角色', trigger: 'blur'}
-        ],
-        employeeId: [
-          {required: true, message: '请输入员工编号', trigger: 'blur'}
         ]
       }
     }
@@ -139,6 +136,7 @@ export default {
       this.$axios.post('apiurl', {employeeId: row.employeeId}).then(res => {
         console.log(res.data)
         if (res.data.data.success === true) {
+          this.getUserInfo()
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -157,11 +155,11 @@ export default {
             this.$axios.post('apiurl', {
               userName: this.form.userName,
               password: this.form.password,
-              identity: this.form.identity,
-              employeeId: this.form.employeeId
+              identity: this.form.identity
             }).then(res => {
               console.log(res.data)
               if (res.data.data.success === true) {
+                this.getUserInfo()
                 this.$message({
                   message: '添加用户成功',
                   type: 'success'
@@ -172,14 +170,11 @@ export default {
             })
           } else if (this.dialogTitle === '修改用户') {
             // apiurl为接口地址
-            this.$axios.put('apiurl', {
-              userName: this.form.userName,
-              password: this.form.password,
-              identity: this.form.identity,
-              employeeId: this.form.employeeId
-            }).then(res => {
+            this.$axios.put('apiurl', this.form
+            ).then(res => {
               console.log(res.data)
               if (res.data.data.success === true) {
+                this.getUserInfo()
                 this.$message({
                   message: '修改用户成功',
                   type: 'success'
@@ -220,6 +215,13 @@ export default {
     },
     sendForm () {
     },
+    getUserInfo () {
+      // apiurl为接口地址
+      this.$axios.get('apiurl').then(res => {
+        console.log(res.data)
+        // this.tableData = res.data.data.students
+      })
+    },
     handleClose (done) {
       this.$confirm('确认关闭？')
         .then(_ => {
@@ -230,11 +232,7 @@ export default {
     }
   },
   created () {
-    // apiurl为接口地址
-    this.$axios.get('apiurl').then(res => {
-      console.log(res.data)
-      // this.tableData = res.data.data.students
-    })
+    this.getUserInfo()
   }
 }
 </script>

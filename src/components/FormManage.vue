@@ -77,7 +77,7 @@
       <el-divider></el-divider>
       <el-form :model="form" :rules="rules" ref="form">
         <el-form-item label="序号" :label-width="formLabelWidth" prop="id">
-          <el-input v-model="form.id" autocomplete="off" class="el-input-width"></el-input>
+          <el-input v-model="form.id" disabled="true" autocomplete="off" class="el-input-width"></el-input>
         </el-form-item>
         <el-form-item label="员工编号" :label-width="formLabelWidth" prop="employeeId">
           <el-input v-model="form.employeeId" autocomplete="off" class="el-input-width"></el-input>
@@ -231,6 +231,13 @@ export default {
     onSubmit () {
       this.dialogFormVisible = false
     },
+    getFormInfo () {
+      // apiurl为接口地址
+      this.$axios.get('apiurl').then(res => {
+        console.log(res.data)
+        // this.tableData = res.data.data.forms
+      })
+    },
     handleClose (done) {
       this.$confirm('确认关闭？')
         .then(_ => {
@@ -240,11 +247,7 @@ export default {
     }
   },
   created () {
-    // apiurl为接口地址
-    this.$axios.get('apiurl').then(res => {
-      console.log(res.data)
-      // this.tableData = res.data.data.forms
-    })
+    this.getFormInfo()
   }
 }
 </script>
