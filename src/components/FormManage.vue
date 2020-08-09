@@ -8,10 +8,20 @@
     <div class="div-1">
       <el-row>
         <el-col :span="2">
-          <el-button class="button-1" type="primary">上传表格</el-button>
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            name="excelFile"
+            :on-success="uploadSuccess"
+            :show-file-list="false"
+            :before-upload="beforeAvatarUpload">
+            <el-button class="button-1" slot="trigger" type="primary">上传文件</el-button>
+            <!-- action为向后端传输文件的接口 -->
+          </el-upload>
         </el-col>
         <el-col :span="2">
-          <el-button class="button-1" type="primary">导出表格</el-button>
+          <el-button class="button-1" type="primary" @click="exportExcel">导出表格</el-button>
         </el-col>
       </el-row>
       <el-row class="row-2">
@@ -21,35 +31,35 @@
             class="table-1"
             :header-cell-style="headerCellStyle">
             <el-table-column
-              prop=""
+              prop="id"
               label="序号">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="employeeId"
               label="员工编号">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="employeeName"
               label="姓名">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="group"
               label="班组">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="post"
               label="职位">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="identityCard"
               label="身份证">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="bank"
               label="开户行">
             </el-table-column>
             <el-table-column
-              prop=""
+              prop="bankAccount"
               label="银行账户">
             </el-table-column>
             <el-table-column
@@ -101,11 +111,23 @@
 </template>
 
 <script>
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+
 export default {
   name: 'FormManage',
   data () {
     return {
-      tableData: [],
+      tableData: [{
+        id: 1,
+        employeeId: '10001',
+        employeeName: '张三',
+        group: 'group 1',
+        post: '前端工程师',
+        identityCard: '130183',
+        bank: '中行',
+        bankAccount: '62226'
+      }],
       dialogFormVisible: false,
       formLabelWidth: '120px',
       headerCellStyle: {background: '#eef1f6', color: '#606266'},
@@ -148,6 +170,59 @@ export default {
     }
   },
   methods: {
+    //  uploadUrl: function() {
+    //   return (
+    //     "/fanxing/import/batchInsertShops" +
+    //     "?businessName=" +
+    //     this.businessName +
+    //     "&businessStatus=" +
+    //     this.businessStatus +
+    //     "&businessType=" +
+    //     this.businessType
+    //   );
+    // },
+    uploadSuccess (response, file, fileList) {
+      if (response.status) {
+        alert('文件导入成功')
+      } else {
+        alert('文件导入失败')
+      }
+    },
+    // 上传前对文件的大小的判断
+    beforeAvatarUpload (file) {
+      const extension = file.name.split('.')[1] === 'xls'
+      const extension2 = file.name.split('.')[1] === 'xlsx'
+      const extension3 = file.name.split('.')[1] === 'doc'
+      const extension4 = file.name.split('.')[1] === 'docx'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!extension && !extension2 && !extension3 && !extension4) {
+        alert('上传模板只能是 xls、xlsx、doc、docx 格式!')
+      }
+      if (!isLt2M) {
+        alert('上传模板大小不能超过 10MB!')
+      }
+      return extension || extension2 || extension3 || (extension4 && isLt2M)
+    },
+    submitUpload () {
+      if (this.businessType != null) {
+        // 触发组件的action
+        this.$refs.upload.submit()
+      }
+      if (this.businessType == null) {
+        this.businessType = 'businessType不能为空'
+      }
+    },
+    exportExcel () {
+      /* generate workbook object from table */
+      var wb = XLSX.utils.table_to_book(document.querySelector('.table-1'))
+      /* get binary string as output */
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+      } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+      return wbout
+    },
+
     handleEdit (index, row) {
       this.dialogFormVisible = true
     },
