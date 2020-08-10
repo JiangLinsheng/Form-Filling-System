@@ -1,32 +1,142 @@
+
 <template>
-  <div>
-    <label>登录页面</label>
-    <el-radio v-model="role" label="user">普通用户</el-radio>
-    <el-radio v-model="role" label="admin">管理员</el-radio>
-    <el-button type="primary" @click="userLogin">登录</el-button>
+  <div class="login_container">
+    <el-row class="el-row" type="flex" justify="space-around" align="middle">
+      <el-col :span="10" class="left">
+        <div class="icon_box">
+          <img src="../assets/u18.svg" alt />
+        </div>
+      </el-col>
+      <el-col :span="6" class="right">
+        <el-row>
+          <el-col class="subtitle" :span="10">
+            <label class="lable1">登录/Login</label>
+          </el-col>
+          <el-col :span="10">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-radio v-model="radio" label="admin">管理员</el-radio>
+              </el-col>
+              <el-col :span="12">
+                <el-radio v-model="radio" label="user">用户</el-radio>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form ref="loginFormRef" :model="loginForm" :rules="rules" class="login_form">
+              <el-form-item label="账号" prop="username">
+                <el-input
+                  v-model="loginForm.username"
+                  prefix-icon="el-icon-user"
+                  placeholder="请输入用户名"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="密码" prop="password">
+                <el-input
+                  v-model="loginForm.password"
+                  prefix-icon="el-icon-key"
+                  placeholder="请输入密码"
+                ></el-input>
+              </el-form-item>
+              <el-form-item class="btns">
+                <el-button type="info" size="middle" round @click="resetLoginForm">重置</el-button>
+                <el-button type="success" size="middle" round @click="Login">登录</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UserLogin',
-  data () {
+  name: "UserLogin",
+  data() {
     return {
-      role: ''
-    }
+      radio: "admin",
+      loginForm: {
+        password: "",
+        username: "",
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入正确用户名", trigger: "blur" },
+          { min: 5, max: 11, message: "长度在3到5个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入正确密码", trigger: "blur" },
+          { min: 5, max: 11, message: "长度在5到11个字符", trigger: "blur" },
+        ],
+      },
+    };
   },
   methods: {
-    userLogin () {
-      if (this.role === 'user') {
-        this.$router.push({path: '/UserHome'})
-      } else if (this.role === 'admin') {
-        this.$router.push({path: '/AdminHome'})
-      }
-    }
-  }
-}
+    Login() {
+      this.$refs.loginFormRef.validate((valid) => {
+        if (!valid) return;
+        if (this.radio === "user") {
+          this.$router.push({ path: "/UserHome" });
+        } else if (this.radio === "admin") {
+          this.$router.push({ path: "/AdminHome" });
+        }
+      });
+    },
+
+    resetLoginForm() {
+      this.$refs.loginFormRef.resetFields();
+    },
+  },
+};
 </script>
 
 <style scoped>
+/* eslint-disable */
+.login_container {
+  height: 100%;
+  background: url("../assets/u17.png");
+  background-size: 100%;
+}
 
+.el-row {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+
+.right {
+  background-color: #fff;
+  opacity: 0.85;
+  border-radius: 3%;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login_form {
+  width: 100%;
+  padding: 0 25px;
+  box-sizing: border-box;
+}
+
+.lable1 {
+  font-family: 微软雅黑;
+  font-size: large;
+  margin-left: 20px;
+}
+
+.subtitle {
+  margin: 10px 0;
+}
 </style>

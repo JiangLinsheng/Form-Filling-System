@@ -12,6 +12,10 @@ export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/UserLogin'
+    },
+    {
+      path: '/UserLogin',
       name: 'UserLogin',
       component: UserLogin
     },
