@@ -183,8 +183,8 @@ export default {
                 this.$message.error('修改用户失败')
               }
             })
-            this.clearForm()
           }
+          this.clearForm()
         } else {
           console.log('error submit!!')
           return false

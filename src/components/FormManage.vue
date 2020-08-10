@@ -77,7 +77,7 @@
       <el-divider></el-divider>
       <el-form :model="form" :rules="rules" ref="form">
         <el-form-item label="序号" :label-width="formLabelWidth" prop="id">
-          <el-input v-model="form.id" autocomplete="off" class="el-input-width"></el-input>
+          <el-input v-model="form.id" disabled="true" autocomplete="off" class="el-input-width"></el-input>
         </el-form-item>
         <el-form-item label="员工编号" :label-width="formLabelWidth" prop="employeeId">
           <el-input v-model="form.employeeId" autocomplete="off" class="el-input-width"></el-input>
@@ -103,7 +103,7 @@
       </el-form>
       <el-divider></el-divider>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button @click="cancelSubmit">取消</el-button>
         <el-button type="primary" @click="onSubmit('form')">确定</el-button>
       </div>
     </el-dialog>
@@ -236,9 +236,10 @@ export default {
     },
     handleDelete (index, row) {
       // apiurl为接口地址
-      this.$axios.post('apiurl', {employeeId: row.employeeId}).then(res => {
+      this.$axios.post('apiurl', {id: row.id}).then(res => {
         console.log(res.data)
         if (res.data.data.success === true) {
+          this.getFormInfo()
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -253,24 +254,16 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           // apiurl为接口地址
-          this.$axios.put('apiurl', {
-            id: this.form.id,
-            employeeId: this.form.employeeId,
-            employeeName: this.form.employeeName,
-            group: this.form.group,
-            post: this.form.post,
-            identityCard: this.form.identityCard,
-            bank: this.form.bank,
-            bankAccount: this.form.bankAccount
-          }).then(res => {
+          this.$axios.put('apiurl', this.form).then(res => {
             console.log(res.data)
             if (res.data.data.success === true) {
+              this.getFormInfo()
               this.$message({
-                message: '修改用户成功',
+                message: '修改表单成功',
                 type: 'success'
               })
             } else {
-              this.$message.error('修改用户失败')
+              this.$message.error('修改表单失败')
             }
           })
           this.clearForm()
@@ -280,26 +273,38 @@ export default {
         }
       })
     },
+    cancelSubmit () {
+      this.dialogFormVisible = false
+      this.clearForm()
+    },
     handleClose (done) {
       this.$confirm('确认关闭？')
         .then(_ => {
           done()
+          this.clearForm()
         })
         .catch(_ => {})
     },
     clearForm () {
-      this.form.userName = ''
-      this.form.password = ''
-      this.form.identity = ''
+      this.form.id = ''
       this.form.employeeId = ''
+      this.form.employeeName = ''
+      this.form.group = ''
+      this.form.post = ''
+      this.form.identityCard = ''
+      this.form.bank = ''
+      this.form.bankAccount = ''
     }
   },
-  created () {
+  getFormInfo () {
     // apiurl为接口地址
     this.$axios.get('apiurl').then(res => {
       console.log(res.data)
       // this.tableData = res.data.data.forms
     })
+  },
+  created () {
+    this.getFormInfo()
   }
 }
 </script>
