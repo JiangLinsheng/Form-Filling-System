@@ -214,6 +214,23 @@ export default {
       this.multipleSelection = val
     },
     sendForm () {
+      let params = new URLSearchParams()
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        params.append('employeeId', this.multipleSelection[i].employeeId)
+      }
+      console.log(params.get('employeeId'))
+      // apiurl为接口地址
+      this.$axios.post('apiurl', params).then(res => {
+        console.log(res.data)
+        if (res.data.data.success === true) {
+          this.$message({
+            message: '发送表单成功',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('发送表单失败')
+        }
+      })
     },
     getUserInfo () {
       // apiurl为接口地址
