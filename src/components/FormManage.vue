@@ -21,7 +21,7 @@
           </el-upload>
         </el-col>
         <el-col :span="2">
-          <el-button class="button-1" type="primary" @click="exportExcel">导出表格</el-button>
+          <el-button class="button-1" type="primary" @click="handleBtn">导出表格</el-button>
         </el-col>
       </el-row>
       <el-row class="row-2">
@@ -170,17 +170,6 @@ export default {
     }
   },
   methods: {
-    //  uploadUrl: function() {
-    //   return (
-    //     "/fanxing/import/batchInsertShops" +
-    //     "?businessName=" +
-    //     this.businessName +
-    //     "&businessStatus=" +
-    //     this.businessStatus +
-    //     "&businessType=" +
-    //     this.businessType
-    //   );
-    // },
     uploadSuccess (response, file, fileList) {
       if (response.status) {
         alert('文件导入成功')
@@ -212,15 +201,18 @@ export default {
         this.businessType = 'businessType不能为空'
       }
     },
-    exportExcel () {
-      /* generate workbook object from table */
-      var wb = XLSX.utils.table_to_book(document.querySelector('.table-1'))
-      /* get binary string as output */
-      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-      try {
-        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
-      } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
-      return wbout
+    handleBtn () {
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/excel/export2Excel')
+        const list = this.tableData
+        const filterVal = ['id', 'employeeId', 'employeeName', 'group', 'post', 'identityCard', 'bank', 'bankAccount']// 取出要下载的表头字段
+        const tHeader = ['序号', '员工编号', '姓名', '班组', '职位', '身份证', '开户行', '银行账户']// 把表头字段定义成想要的中文或英文
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '员工信息')// 定义excel下载成功的表名
+      })
+    },
+    formatJson (filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
     },
 
     handleEdit (index, row) {
