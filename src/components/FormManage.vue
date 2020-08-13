@@ -202,14 +202,20 @@ export default {
       }
     },
     handleBtn () {
-      require.ensure([], () => {
-        const { export_json_to_excel } = require('@/excel/export2Excel')
-        const list = this.tableData
-        const filterVal = ['id', 'employeeId', 'employeeName', 'group', 'post', 'identityCard', 'bank', 'bankAccount']// 取出要下载的表头字段
-        const tHeader = ['序号', '员工编号', '姓名', '班组', '职位', '身份证', '开户行', '银行账户']// 把表头字段定义成想要的中文或英文
-        const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '员工信息')// 定义excel下载成功的表名
+      // 根据后台返回地址直接下载excel文件
+      this.$axios.post('http://121.41.228.122:8081/admin/getExcelFile').then(res => {
+        console.log(res.data)
+        window.open(res.data.data.downLoadPath)
       })
+      // 根据数据在前端生成excel文件并下载
+      // require.ensure([], () => {
+      //   const { export_json_to_excel } = require('@/excel/export2Excel')
+      //   const list = this.tableData
+      //   const filterVal = ['id', 'employeeId', 'employeeName', 'group', 'post', 'identityCard', 'bank', 'bankAccount']// 取出要下载的表头字段
+      //   const tHeader = ['序号', '员工编号', '姓名', '班组', '职位', '身份证', '开户行', '银行账户']// 把表头字段定义成想要的中文或英文
+      //   const data = this.formatJson(filterVal, list)
+      //   export_json_to_excel(tHeader, data, '员工信息')// 定义excel下载成功的表名
+      // })
     },
     formatJson (filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
@@ -286,14 +292,14 @@ export default {
       this.form.identityCard = ''
       this.form.bank = ''
       this.form.bankAccount = ''
+    },
+    getFormInfo () {
+      // apiurl为接口地址
+      this.$axios.get('apiurl').then(res => {
+        console.log(res.data)
+        // this.tableData = res.data.data.forms
+      })
     }
-  },
-  getFormInfo () {
-    // apiurl为接口地址
-    this.$axios.get('apiurl').then(res => {
-      console.log(res.data)
-      // this.tableData = res.data.data.forms
-    })
   },
   created () {
     this.getFormInfo()
