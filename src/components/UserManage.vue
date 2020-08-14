@@ -76,7 +76,7 @@
       </el-form>
       <el-divider></el-divider>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelSubmit">取 消</el-button>
+        <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="onSubmit('form')">确 定</el-button>
       </div>
     </el-dialog>
@@ -107,13 +107,15 @@ export default {
       },
       rules: {
         userName: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         password: [
-          {required: true, message: '请输入密码', trigger: 'blur'}
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         identity: [
-          {required: true, message: '请输入角色', trigger: 'blur'}
+          {required: true, message: '请选择角色', trigger: 'change'}
         ]
       }
     }
@@ -191,7 +193,7 @@ export default {
         }
       })
     },
-    cancelSubmit () {
+    handleClose () {
       this.dialogFormVisible = false
       this.clearForm()
     },
@@ -238,14 +240,6 @@ export default {
         console.log(res.data)
         // this.tableData = res.data.data.students
       })
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-          this.clearForm()
-        })
-        .catch(_ => {})
     }
   },
   created () {

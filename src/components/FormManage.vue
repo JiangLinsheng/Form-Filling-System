@@ -103,7 +103,7 @@
       </el-form>
       <el-divider></el-divider>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelSubmit">取消</el-button>
+        <el-button @click="handleClose">取消</el-button>
         <el-button type="primary" @click="onSubmit('form')">确定</el-button>
       </div>
     </el-dialog>
@@ -146,25 +146,32 @@ export default {
           {required: true, message: '请输入序号', trigger: 'blur'}
         ],
         employeeId: [
-          {required: true, message: '请输入员工编号', trigger: 'blur'}
+          {required: true, message: '请输入员工编号', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         employeeName: [
-          {required: true, message: '请输入姓名', trigger: 'blur'}
+          {required: true, message: '请输入姓名', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         group: [
-          {required: true, message: '请输入班组', trigger: 'blur'}
+          {required: true, message: '请输入班组', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         post: [
-          {required: true, message: '请输入职位', trigger: 'blur'}
+          {required: true, message: '请输入职位', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         identityCard: [
-          {required: true, message: '请输入身份证号', trigger: 'blur'}
+          {required: true, message: '请输入身份证号', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         bank: [
-          {required: true, message: '请输入开户银行', trigger: 'blur'}
+          {required: true, message: '请输入开户银行', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         bankAccount: [
-          {required: true, message: '请输入银行账户', trigger: 'blur'}
+          {required: true, message: '请输入银行账户', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ]
       }
     }
@@ -271,17 +278,9 @@ export default {
         }
       })
     },
-    cancelSubmit () {
+    handleClose (done) {
       this.dialogFormVisible = false
       this.clearForm()
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-          this.clearForm()
-        })
-        .catch(_ => {})
     },
     clearForm () {
       this.form.id = ''

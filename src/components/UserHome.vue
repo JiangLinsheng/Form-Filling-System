@@ -4,7 +4,7 @@
       <!-- 头像区域 -->
       <div class="avatarBox">
         <!-- <img src="../assets/logo.png" alt=""> -->
-        表单填写系统
+        <label class="label-1">表单填写系统</label>
       </div>
       <!-- 表单填写区域 -->
       <el-form ref="userFormRef" :model="userForm" :rules="userFormRules" label-width="80px" class="userForm">
@@ -66,32 +66,37 @@ export default {
         // 验证员工编号是否合法
         employeeId: [
           { required: true, message: '请输入员工编号', trigger: 'blur' },
-          { min: 5, max: 8, message: '长度在 5 到 8 个字符', trigger: 'blur' }
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         // 验证姓名是否合法
         employeeName: [
-          {required: true, message: '请输入姓名', trigger: 'blur'}
+          {required: true, message: '请输入姓名', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         // 验证班组是否合法
         group: [
-          {required: true, message: '请输入班组', trigger: 'blur'}
+          {required: true, message: '请输入班组', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         // 验证职位是否合法
         post: [
-          {required: true, message: '请输入职位', trigger: 'blur'}
+          {required: true, message: '请输入职位', trigger: 'blur'},
+          { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         // 验证身份证是否合法
         identityCard: [
           {required: true, message: '请输入身份证', trigger: 'blur'},
-          {min: 18, max: 18, massage: '请输入正确的身份证号码', trigger: 'blur'}
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         // 验证开户行是否合法
         bank: [
-          {required: true, message: '请输入开户银行', trigger: 'blur'}
+          {required: true, message: '请输入开户银行', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ],
         // 验证银行账户是否合法
         bankAccount: [
-          {required: true, message: '请输入银行账户', trigger: 'blur'}
+          {required: true, message: '请输入银行账户', trigger: 'blur'},
+          { max: 20, message: '长度应小于20字符', trigger: 'blur' }
         ]
       }
     }
@@ -131,13 +136,13 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-  .avatarBox {
-    height: 130px;
-    width: 130px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%);
-  }
+.avatarBox {
+  height: 130px;
+  width: 100%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
 .btns {
   display: flex;
   justify-content: flex-end;
@@ -148,5 +153,11 @@ export default {
   width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
+}
+
+.label-1{
+  font-family: 微软雅黑;
+  font-size: xx-large;
+  margin-left:130px ;
 }
 </style>
