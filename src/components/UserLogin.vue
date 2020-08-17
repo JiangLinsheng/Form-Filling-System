@@ -35,6 +35,7 @@
               </el-form-item>
               <el-form-item label="密码" prop="password">
                 <el-input
+                  type="password"
                   v-model="loginForm.password"
                   prefix-icon="el-icon-key"
                   placeholder="请输入密码"
@@ -79,9 +80,9 @@ export default {
       this.$refs.loginFormRef.validate((valid) => {
         if (!valid) return;
         if (this.radio === "user") {
-          this.$router.push({ path: "/UserHome" });
+          this.$router.push({ path: "/UserManage" });
         } else if (this.radio === "admin") {
-          this.$router.push({ path: "/AdminHome" });
+          this.$router.push({ path: "/AdminManage" });
         }
       });
     },
