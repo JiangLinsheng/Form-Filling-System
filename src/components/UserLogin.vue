@@ -37,6 +37,7 @@
                 <el-input
                   v-model="loginForm.password"
                   prefix-icon="el-icon-key"
+                  type="password"
                   placeholder="请输入密码"
                 ></el-input>
               </el-form-item>
