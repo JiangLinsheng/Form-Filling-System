@@ -118,16 +118,7 @@ export default {
   name: 'FormManage',
   data () {
     return {
-      tableData: [{
-        id: 1,
-        employeeId: '10001',
-        employeeName: '张三',
-        group: 'group 1',
-        post: '前端工程师',
-        identityCard: '130183',
-        bank: '中行',
-        bankAccount: '62226'
-      }],
+      tableData: [],
       dialogFormVisible: false,
       formLabelWidth: '120px',
       headerCellStyle: {background: '#eef1f6', color: '#606266'},
@@ -294,9 +285,9 @@ export default {
     },
     getFormInfo () {
       // apiurl为接口地址
-      this.$axios.get('apiurl').then(res => {
+      this.$axios.post('http://121.41.228.122:8081/admin/getAllEmployee').then(res => {
         console.log(res.data)
-        // this.tableData = res.data.data.forms
+        this.tableData = res.data.data.employeeList
       })
     }
   },

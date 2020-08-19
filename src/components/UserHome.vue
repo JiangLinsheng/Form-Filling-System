@@ -17,8 +17,8 @@
           <el-input v-model="userForm.employeeName"></el-input>
         </el-form-item>
         <!-- 班组 -->
-        <el-form-item label="班组" prop="group">
-          <el-input v-model="userForm.group"></el-input>
+        <el-form-item label="班组" prop="department">
+          <el-input v-model="userForm.department"></el-input>
         </el-form-item>
         <!-- 职位 -->
         <el-form-item label="职位" prop="post">
@@ -55,7 +55,7 @@ export default {
       userForm: {
         employeeId: '',
         employeeName: '',
-        group: '',
+        department: '',
         post: '',
         identityCard: '',
         bank: '',
@@ -74,7 +74,7 @@ export default {
           { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
         // 验证班组是否合法
-        group: [
+        department: [
           {required: true, message: '请输入班组', trigger: 'blur'},
           { max: 10, message: '长度应小于10字符', trigger: 'blur' }
         ],
@@ -108,13 +108,22 @@ export default {
       this.$refs.userFormRef.resetFields()
     },
     submit () {
-      this.$refs.userFormRef.validate(async valid => {
-        // console.log(valid)
-        if (!valid) return
-        const {data: res} = await this.$http.post('submit', this.userForm)
-        // console.log(res)
-        if (res.meta.status !== 200) return console.log('登录失败')
-        console.log('登录成功')
+      this.$refs.userFormRef.validate(valid => {
+        if (valid) {
+          this.$axios.post('http://121.41.228.122:8081/admin/addEmployee', this.userForm).then(res => {
+            console.log(res.data)
+            if (res.data.success === true) {
+              this.$message({
+                message: '上传表单成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error('上传表单失败')
+            }
+          })
+        } else {
+          return false
+        }
       })
     }
   }

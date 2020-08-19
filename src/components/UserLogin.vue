@@ -66,25 +66,39 @@ export default {
       rules: {
         username: [
           { required: true, message: "请输入正确用户名", trigger: "blur" },
-          { min: 5, max: 11, message: "长度在5到11个字符", trigger: "blur" },
+          { max: 20, message: "长度在20个字符以内", trigger: "blur" },
         ],
         password: [
           { required: true, message: "请输入正确密码", trigger: "blur" },
-          { min: 5, max: 11, message: "长度在5到11个字符", trigger: "blur" },
+          { max: 20, message: "长度在20个字符以内", trigger: "blur" },
         ],
       },
     };
   },
   methods: {
-    Login() {
+    Login () {
       this.$refs.loginFormRef.validate((valid) => {
-        if (!valid) return;
-        if (this.radio === "user") {
-          this.$router.push({ path: "/UserHome" });
-        } else if (this.radio === "admin") {
-          this.$router.push({ path: "/AdminHome" });
+        if (valid) {
+          this.$axios.post('http://121.41.228.122:8081/admin/loginInAccount', {
+            userName: this.loginForm.username,
+            password: this.loginForm.password,
+            identity: this.radio
+          }).then(res => {
+            console.log(res.data)
+            if (res.data.success === true) {
+              if (this.radio === 'user') {
+                this.$router.push({ path: '/UserHome' })
+              } else if (this.radio === 'admin') {
+                this.$router.push({ path: '/AdminHome' })
+              }
+            } else {
+              this.$message.error('用户身份信息有误')
+            }
+          })
+        } else {
+          return false
         }
-      });
+      })
     },
 
     resetLoginForm() {
